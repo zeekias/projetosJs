@@ -6,15 +6,17 @@ let intervaloTimer;
 let numeroTimer = [0,0,0];
 let contadorGeral;
 let startTimer = true;
+const avisoTimer = document.querySelector('#aviso');
+const modelTextAviso = ['APERTE ESPAÇO PARA INICIAR', 'APERTE ESPAÇO PARA PARAR'];
 
 function iniciarTimer(){
+    avisoTimer.innerText = modelTextAviso[1];
     timer.setAttribute('id', 'p-tempo-iniciado');
     contadorGeral = 0;
     startTimer = false;
      intervaloTimer = setInterval(function(){
         numeroTimer[2] += 1;
         contadorGeral +=1;
-        //numeroTimer[2] >= 100 ? numeroTimer[2] = 0 : false;
         if(numeroTimer[2]>100){
             numeroTimer[2]=0;
             numeroTimer[1]++;
@@ -28,6 +30,7 @@ function iniciarTimer(){
 
 }
 function pararTimer(){
+    avisoTimer.innerText = modelTextAviso[0];
     timer.setAttribute('id', 'p-tempo-parado');
     startTimer =true;
     rankearTimers(contadorGeral);
@@ -60,7 +63,7 @@ function salvarTempo(){
     listaTimer.appendChild(liTimer);
 }
 const timerSalvos = [];
-let menorTempo = 80000;
+let menorTempo = 800;
 
 function rankearTimers(contadorGeral){
     timerSalvos.push(contadorGeral);
@@ -71,30 +74,11 @@ pRank.innerText = '';
 pRank.setAttribute('id', 'melhores-tempos');
 container.appendChild(pRank);
 
-function isLocalStorageExists(){
-    if(localStorage.getItem('menorTempo')){
-        return true;
-    }
-    return false;
-}
 function rankTimer(){
-    menorTempoString = isLocalStorageExists() ? regastarTempoInLocalStorage() : `MENOR TEMPO: ${menorTempo/100} Segundos`; 
+    menorTempoString =`MENOR TEMPO: ${menorTempo/100} Segundos`;
     pRank.innerText = menorTempoString;
-    console.log(menorTempoString);
-    salvarTempoInLocalStorage(menorTempoString);
 }
-function regastarTempoInLocalStorage(){
-        const menorTempoJSON = localStorage.getItem('menorTempo')
-        const menorTempoString = JSON.parse(menorTempoJSON);
-        console.log(menorTempoString);
-        return menorTempoString;
-        
-}
-function salvarTempoInLocalStorage(menorTempoString){
-    const menorTempoJSON = JSON.stringify(menorTempoString);
-    localStorage.setItem('menorTempo', menorTempoJSON);
-}
-rankTimer();
+
 document.addEventListener('keyup', (e)=>{
     if(e.keyCode === 32){
         startTimer ===false ? pararTimer(): iniciarTimer();
